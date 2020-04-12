@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+  <h1>Electron Dev Guide</h1>
+  <form>
+    <div class="">
+      <label for="">Select a Video</label>
+      <input type="file" accept="video/*">
+    </div>
+    <button type="submit" name="button">Get Info</button>
+  </form>
+  <h2 id="result"></h2>
+  <script>
+    const electron = require('electron');
+    const { ipcRenderer } = electron;
+
+    document.querySelector('form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      console.log('form was submitted');
+      const { path } = document.querySelector('input').files[0];
+
+      ipcRenderer.send('video:submit', path);
+
+    });
+
+    ipcRenderer.on('video:metadata', (event, duration) => {
+      console.log('metadata received');
+      document.querySelector('#result').innerHTML = `Video is ${duration} seconds`;
+      console.log('metadata added to DOM');
+    });
+  </script>
+</body>
+</html>
